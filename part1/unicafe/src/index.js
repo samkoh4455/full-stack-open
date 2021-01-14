@@ -15,14 +15,12 @@ const Button = (props) => {
 
 const Statistics = ({good, neutral, bad}) => {
   let total = good + neutral + bad;
-  let average, positive;
-  if (total) {
-    average = (good - bad) / total;
-    positive = good / total;
-  } else {
-    average = 0;
-    positive = 'no reviews';
+  if (!total) {
+    return (<p>No feedback given</p>)
   }
+  let average = (good - bad) / total;
+  let positive = good / total;
+
   return (
     <>
       <p>good: {good}</p>
