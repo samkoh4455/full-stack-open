@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 
+
+
 const App = (props) => {
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState(new Uint8Array(props.anecdotes.length));
+  const [maxIdx, setMaxIdx] = useState(0);
 
   const handleRandomClick = () => {
     let idx = Math.floor(Math.random() * (props.anecdotes.length - 1));
@@ -17,6 +20,9 @@ const App = (props) => {
   const handleVoteClick = () => {
     let copyVotes = [...votes];
     copyVotes[selected]++;
+    if (selected !== maxIdx && copyVotes[selected] > copyVotes[maxIdx]) {
+      setMaxIdx(selected);
+    }
     setVotes(copyVotes);
   }
 
@@ -33,6 +39,10 @@ const App = (props) => {
       </p>
       <p>
         has {votes[selected]} votes
+      </p>
+      <h3>Anecdote with most votes: </h3>
+      <p>
+        {props.anecdotes[maxIdx]}
       </p>
     </div>
   )
