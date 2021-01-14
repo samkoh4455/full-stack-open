@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 
 const Heading = (props) => <h1>{props.title}</h1>;
 
-const Results = ({name, value}) => <p>{name}: {value}</p>;
-
 const Button = (props) => {
   return (
     <button
@@ -12,6 +10,28 @@ const Button = (props) => {
     >
       {props.text}
     </button>
+  )
+}
+
+const Statistics = ({good, neutral, bad}) => {
+  let total = good + neutral + bad;
+  let average, positive;
+  if (total) {
+    average = (good - bad) / total;
+    positive = good / total;
+  } else {
+    average = 0;
+    positive = 'no reviews';
+  }
+  return (
+    <>
+      <p>good: {good}</p>
+      <p>neutral: {neutral}</p>
+      <p>bad: {bad}</p>
+      <p>all: {total}</p>
+      <p>average: {average}</p>
+      <p>positive: {positive}</p>
+    </>
   )
 }
 
@@ -36,28 +56,6 @@ const App = () => {
     setFeedback({...feedback, bad: feedback.bad + 1})
   }
 
-  const total = () => {
-    return feedback.good + feedback.neutral + feedback.bad;
-  }
-
-  const average = () => {
-    if (total()) {
-      return (feedback.good - feedback.bad) / total();
-    } else {
-      return 0;
-    }
-
-  }
-
-  const positive = () => {
-    if (total()) {
-      return feedback.good / total();
-    } else {
-      return "";
-    }
-
-  }
-
   return (
     <div>
       <Heading title="give feedback"/>
@@ -65,12 +63,7 @@ const App = () => {
       <Button handleClick={() => handleNeutralClick()} text="neutral"/>
       <Button handleClick={() => handleBadClick()} text="bad"/>
       <Heading title="statistics"/>
-      <Results name="good" value={feedback.good}/>
-      <Results name="neutral" value={feedback.neutral}/>
-      <Results name="bad" value={feedback.bad}/>
-      <Results name="total" value={total()}/>
-      <Results name="average" value={average()} />
-      <p>positive: {positive()} %</p>
+      <Statistics good={feedback.good} neutral={feedback.neutral} bad={feedback.bad} />
     </div>
   )
 }
