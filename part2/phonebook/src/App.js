@@ -12,11 +12,15 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const newNameObj = {
-      name: newName
+    if (persons.findIndex((person) => newName === person.name) > -1) {
+      window.alert(`${newName} is already added to phonebook`);
+    } else {
+      const newNameObj = {
+        name: newName
+      }
+      setPersons(persons.concat(newNameObj));
+      setNewName('');
     }
-    setPersons(persons.concat(newNameObj));
-    setNewName('');
   }
 
   return (
