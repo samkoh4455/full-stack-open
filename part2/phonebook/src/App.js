@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter.js'
 import PersonForm from './components/PersonForm.js'
 import Persons from './components/Persons.js'
-import axios from 'axios'
+import personServices from './services/person.js'
+
 
 
 const App = () => {
@@ -11,16 +12,12 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('');
   const [ filter, setFilter ] = useState('');
 
-  const hook = () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        // console.log(response.data)
-        setPersons(response.data)
+  useEffect(() => {
+    personServices.getAll()
+      .then(entries => {
+        setPersons(entries)
       })
-  }
-
-  useEffect(hook, [])
+  }, [])
 
   const filteredPersons = persons.filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()));
 
@@ -45,10 +42,9 @@ const App = () => {
         name: newName,
         number: newNumber
       }
-      axios
-        .post('http://localhost:3001/persons', newNameObj)
-        .then(res => {
-          setPersons(persons.concat(res.data));
+      personServices.addPerson(newNameObj)
+        .then(entry => {
+          setPersons(persons.concat(entry));
           setNewName('');
           setNewNumber('');
         })
