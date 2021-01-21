@@ -51,6 +51,13 @@ const App = () => {
     }
   }
 
+  const handleDeleteClick = id => {
+    personServices.deletePerson(id)
+      .then((res) => {
+        setPersons(persons.filter(person => person.id !== id))
+      })
+  }
+
   return (
     <>
       <h2>Phonebook</h2>
@@ -67,7 +74,10 @@ const App = () => {
         newNumber={newNumber}
       />
       <h3>Numbers</h3>
-      <Persons filteredPersons={filteredPersons}/>
+      <Persons
+        filteredPersons={filteredPersons}
+        handleDeleteClick={handleDeleteClick}
+      />
     </>
   )
 }
