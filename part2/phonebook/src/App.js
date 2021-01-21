@@ -35,8 +35,22 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (persons.findIndex((person) => newName === person.name) > -1) {
-      window.alert(`${newName} is already added to phonebook`);
+    let idx = persons.findIndex((person) => newName.toLowerCase() === person.name.toLowerCase())
+    if (idx > -1) {
+      if (newNumber === persons[idx].number) {
+        window.alert(`${newName} is already added to phonebook`);
+      } else {
+        const id = persons[idx].id;
+        const msg = 'is already added to the phonebook, replace the old number with a new one?';
+        const result = window.confirm(`${persons[idx].name} ${msg}`);
+        if (result) {
+          const updateObj = { ...persons[idx], number: newNumber}
+          personServices.updatePerson(persons[idx].id, updateObj)
+            .then(updatedPerson => {
+              setPersons(persons.map(person => person.id !== id ? person : updatedPerson))
+            })
+        }
+      }
     } else {
       const newNameObj = {
         name: newName,
