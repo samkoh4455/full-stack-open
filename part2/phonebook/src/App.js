@@ -52,10 +52,14 @@ const App = () => {
   }
 
   const handleDeleteClick = id => {
-    personServices.deletePerson(id)
-      .then((res) => {
-        setPersons(persons.filter(person => person.id !== id))
-      })
+    let name = persons.find(person => person.id === id).name
+    let result = window.confirm(`Delete ${name}?`)
+    if (result) {
+      personServices.deletePerson(id)
+        .then((res) => {
+          setPersons(persons.filter(person => person.id !== id))
+        })
+    }
   }
 
   return (
