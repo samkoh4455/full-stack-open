@@ -3,6 +3,7 @@ import Filter from './components/Filter.js'
 import PersonForm from './components/PersonForm.js'
 import Persons from './components/Persons.js'
 import personServices from './services/person.js'
+import Notification from './components/Notification.js'
 
 
 
@@ -11,6 +12,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState('');
   const [ filter, setFilter ] = useState('');
+  const [ notification, setNotification ] = useState({message: null, isError: false});
 
   useEffect(() => {
     personServices.getAll()
@@ -48,6 +50,10 @@ const App = () => {
           personServices.updatePerson(persons[idx].id, updateObj)
             .then(updatedPerson => {
               setPersons(persons.map(person => person.id !== id ? person : updatedPerson))
+              successNotification(`Updated ${updatedPerson.name}`)
+            })
+            .catch(err => {
+              errorNotification(`Information of ${persons[idx].name} has already been removed from server`)
             })
         }
       }
@@ -61,8 +67,23 @@ const App = () => {
           setPersons(persons.concat(entry));
           setNewName('');
           setNewNumber('');
+          successNotification(`Added ${newNameObj.name}`)
         })
     }
+  }
+
+  const successNotification = msg => {
+    setNotification({message: msg, isError: false});
+    setTimeout(() => {
+      setNotification({message: null, isError: false});
+    }, 3000)
+  }
+
+  const errorNotification = err => {
+    setNotification({message: err, isError: true});
+    setTimeout(() => {
+      setNotification({message: null, isError: true});
+    }, 5000)
   }
 
   const handleDeleteClick = id => {
@@ -79,6 +100,7 @@ const App = () => {
   return (
     <>
       <h2>Phonebook</h2>
+      <Notification message={notification.message} isError={notification.isError}/>
       <Filter
         filter={filter}
         handleFilterChange={handleFilterChange}
